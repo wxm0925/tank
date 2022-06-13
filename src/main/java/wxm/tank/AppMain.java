@@ -1,5 +1,6 @@
 package wxm.tank;
 
+import wxm.tank.constant.MainMenu;
 import wxm.tank.frame.MainFrame;
 
 /**

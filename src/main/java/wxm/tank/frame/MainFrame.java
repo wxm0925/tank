@@ -1,6 +1,7 @@
 package wxm.tank.frame;
 
-import wxm.tank.MainMenu;
+import wxm.tank.constant.DirectionEnum;
+import wxm.tank.constant.MainMenu;
 import wxm.tank.Tank;
 import wxm.tank.constant.TankConstants;
 
@@ -22,7 +23,7 @@ public class MainFrame extends  Frame implements Runnable{
 
     private MainMenu mainMenu;
 
-    private Tank p1Tank = new Tank(500,200,Tank.DIR_UP);
+    private Tank p1Tank = new Tank(500,200, DirectionEnum.UP);
 
     public static int titleHight;
     public MainFrame(MainMenu mainMenu) {
@@ -80,23 +81,27 @@ public class MainFrame extends  Frame implements Runnable{
                         }
                     }
                     //游戏中的按键处理
-                } else if (state == TankConstants.STATE_IN_GAME) {
+                }
+                else if (state == TankConstants.STATE_IN_GAME) {
                     if (keyCode == KeyEvent.VK_UP) {
-                        p1Tank.setDir(Tank.DIR_UP);
+                        p1Tank.setDir(DirectionEnum.UP);
                         p1Tank.setState(Tank.STATE_MOVING);
                     }
                     //处理↓
                     if (keyCode == KeyEvent.VK_DOWN) {
-                        p1Tank.setDir(Tank.DIR_DOWN);
+                        p1Tank.setDir(DirectionEnum.DOWN);
                         p1Tank.setState(Tank.STATE_MOVING);
                     }
                     if (keyCode == KeyEvent.VK_LEFT) {
-                        p1Tank.setDir(Tank.DIR_LEFT);
+                        p1Tank.setDir(DirectionEnum.LEFT);
                         p1Tank.setState(Tank.STATE_MOVING);
                     }
                     if (keyCode == KeyEvent.VK_RIGHT) {
-                        p1Tank.setDir(Tank.DIR_RIGHT);
+                        p1Tank.setDir(DirectionEnum.RIGHT);
                         p1Tank.setState(Tank.STATE_MOVING);
+                    }
+                    if (keyCode == KeyEvent.VK_SPACE) {
+                        p1Tank.launch(getGraphics());
                     }
                 }
             }

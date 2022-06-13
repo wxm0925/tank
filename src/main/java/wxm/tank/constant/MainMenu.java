@@ -1,4 +1,4 @@
-package wxm.tank;
+package wxm.tank.constant;
 
 
 /**
