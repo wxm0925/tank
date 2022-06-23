@@ -5,20 +5,24 @@ import java.awt.*;
 /**
  * @author wenxiangmin
  * @ClassName Constants.java
- * @Description TODO
+ * @Description 常量
  * @createTime 2022年06月10日 19:58:00
  */
 public interface TankConstants {
     String title = "坦克大战";
 
     //主窗口宽度
-    int FRAME_WIDTH = 1500;
+    int FRAME_WIDTH = Screen.WIDTH;
     //主窗口宽度
-    int FRAME_HIGHT = 900;
+    int FRAME_HIGHT = Screen.HEIGHT;
+
+    //坦克的宽高
+    int TANK_WIDTH = 50;
+    int TANK_HEIGHT = 50;
 
     //屏幕轴的 X Y轴。定义主窗口在屏幕的显示位置
-    int LOCATION_X = (2160 / 2)  - (FRAME_WIDTH / 2);
-    int LOCATION_Y = (1440 / 2)  - (FRAME_HIGHT / 2);
+    int LOCATION_X = 0;
+    int LOCATION_Y = 0;
 
     //游戏状态
     int STATE_MENU = 0;

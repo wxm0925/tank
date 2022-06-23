@@ -1,9 +1,11 @@
 package wxm.tank.constant;
 
+import java.awt.*;
+
 /**
  * @author wenxiangmin
  * @ClassName DirectionEnum.java
- * @Description TODO
+ * @Description 方向枚举
  * @createTime 2022年06月13日 21:18:00
  */
 public enum DirectionEnum {
@@ -14,4 +16,5 @@ public enum DirectionEnum {
     DirectionEnum(int index) {
         this.index = index;
     }
+
 }

@@ -17,27 +17,48 @@ public abstract class Bullet {
     //坐标
     int x,y;
 
-    //半径
-    int RADIUS;
+    boolean visible = true;
 
     DirectionEnum dir;
 
     Color color = Color.WHITE;
 
-    public void fly(Graphics g,  DirectionEnum tankDir) {
-        g.setColor(color);
-        if (DirectionEnum.UP == dir) {
-            y = y - speed;
-            g.fillOval(x - RADIUS,y - RADIUS,2 * RADIUS, 2 * RADIUS);
-        } else if (DirectionEnum.DOWN == dir) {
-            y = y + speed;
-            g.fillOval(x - RADIUS,y - RADIUS,2 * RADIUS, 2 * RADIUS);
-        } else if (DirectionEnum.LEFT == dir) {
-            x = x - speed;
-            g.fillOval(x - RADIUS,y - RADIUS,2 * RADIUS, 2 * RADIUS);
-        } else if (DirectionEnum.RIGHT == dir) {
-            x = x + speed;
-            g.fillOval(x - RADIUS,y - RADIUS,2 * RADIUS, 2 * RADIUS);
-        }
+    /**
+     * 绘制子弹
+     * @param g
+     * @param tankDir
+     */
+    public abstract void fly(Graphics g,  DirectionEnum tankDir);
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public DirectionEnum getDir() {
+        return dir;
+    }
+
+    public void setDir(DirectionEnum dir) {
+        this.dir = dir;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

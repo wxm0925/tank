@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * @author wenxiangmin
  * @ClassName Utils.java
- * @Description TODO
+ * @Description 工具类
  * @createTime 2022年06月12日 19:05:00
  */
 public class Utils {

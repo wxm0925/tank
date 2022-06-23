@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 /**
  * @author wenxiangmin
@@ -24,6 +25,12 @@ public class MainFrame extends  Frame implements Runnable{
     private MainMenu mainMenu;
 
     private Tank p1Tank = new Tank(500,200, DirectionEnum.UP);
+
+    //用于解决屏幕闪烁的问题
+    private BufferedImage bufferedImage =
+            new BufferedImage(TankConstants.FRAME_WIDTH,
+                    TankConstants.FRAME_HIGHT,
+                    BufferedImage.TYPE_4BYTE_ABGR);
 
     public static int titleHight;
     public MainFrame(MainMenu mainMenu) {
@@ -44,6 +51,8 @@ public class MainFrame extends  Frame implements Runnable{
         super.setLocation(TankConstants.LOCATION_X,TankConstants.LOCATION_Y);
         //更新窗口
         initEventListner();
+        // 解决窗口没有黑色背景大的问题
+        setResizable(false);
     }
 
 
@@ -127,16 +136,18 @@ public class MainFrame extends  Frame implements Runnable{
 
     /**
      * 系统回调，用于更新窗口内容 30ms调用一次
-     * @param g 画笔
+     * @param g1 画笔
      */
     @Override
-    public void update(Graphics g) {
+    public void update(Graphics g1) {
+        Graphics g = bufferedImage.getGraphics();
         g.setFont(TankConstants.FONT);
         if (state == TankConstants.STATE_MENU) {
             drawMenu(g);
         }else if (state == TankConstants.STATE_IN_GAME) {
             drawRun(g);
         }
+        g1.drawImage(bufferedImage,0,0,null);
     }
 
     /**
