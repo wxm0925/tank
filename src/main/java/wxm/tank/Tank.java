@@ -20,40 +20,10 @@ import java.util.Map;
  * @Description 坦克类
  * @createTime 2022年06月12日 18:44:00
  */
-public class Tank {
+public abstract class Tank {
     //坦克图片的宽高
     public static final int WIDTH = TankConstants.TANK_WIDTH;
     public static final int HIGHT = TankConstants.TANK_HEIGHT;
-    //坦克图片
-    public static Map<DirectionEnum,Image> imgMap;
-
-
-    static {
-        //初始化坦克图片
-        imgMap = new HashMap<>(4);
-        InputStream upIs = Tank.class.getClassLoader().getResourceAsStream("img/tank_u.gif");
-        InputStream downIs = Tank.class.getClassLoader().getResourceAsStream("img/tank_d.gif");
-        InputStream leftIs = Tank.class.getClassLoader().getResourceAsStream("img/tank_l.gif");
-        InputStream rightIs = Tank.class.getClassLoader().getResourceAsStream("img/tank_r.gif");
-        byte[] imgData = new byte[6048];
-        try {
-            upIs.read(imgData);
-            Image imaUp = new ImageIcon(imgData).getImage();
-            imgMap.put(DirectionEnum.UP,imaUp);
-            downIs.read(imgData);
-            Image imaDown = new ImageIcon(imgData).getImage();
-            imgMap.put(DirectionEnum.DOWN,imaDown);
-            leftIs.read(imgData);
-            Image imaLeft = new ImageIcon(imgData).getImage();
-            imgMap.put(DirectionEnum.LEFT,imaLeft);
-            rightIs.read(imgData);
-            Image imaRight = new ImageIcon(imgData).getImage();
-            imgMap.put(DirectionEnum.RIGHT,imaRight);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     //状态
@@ -64,28 +34,30 @@ public class Tank {
     //默认速度 每帧4像素，目前的刷新率是每秒33帧
     static final int DEFAULT_SPEED = 5 ;
 
-    private int state = STATE_STANDING;
+    public int state = STATE_STANDING;
     //坐标
-    private int x,y;
+    public int x,y;
 
     //血量
-    private int hp = 1000;
+    public int hp = 1000;
 
     //攻击力
-    private int atk;
+    public int atk;
 
     //速度
-    private int speed = DEFAULT_SPEED;
+    public int speed = DEFAULT_SPEED;
 
     //当前的方向
-    private DirectionEnum dir;
+    public DirectionEnum dir;
 
-    //坦克颜色
-    private Color color;
 
-    private boolean trigger = false;
+    public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
-    private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    //敌人坦克为true
+    public boolean enemy;
+
+
+
     /**
      * 构造器
      * @param x 坐标x
@@ -96,7 +68,6 @@ public class Tank {
         this.x = x;
         this.y = y;
         this.dir = dir;
-        this.color = Utils.getRandomColor();
     }
 
 
@@ -104,66 +75,7 @@ public class Tank {
      * 绘制坦克
      * @param g 画笔
      */
-    public void draw(Graphics g) {
-        g.setColor(this.color);
-        if (this.state == STATE_STANDING) {
-            if (dir == DirectionEnum.UP) {
-                g.drawImage(imgMap.get(DirectionEnum.UP),x- (WIDTH / 2),y - (HIGHT / 2),WIDTH,HIGHT,null);
-            } else if (dir == DirectionEnum.DOWN) {
-                g.drawImage(imgMap.get(DirectionEnum.DOWN),x- (WIDTH / 2),y - (HIGHT / 2),WIDTH,HIGHT,null);
-            } else if (dir == DirectionEnum.RIGHT) {
-                g.drawImage(imgMap.get(DirectionEnum.RIGHT),x- (HIGHT / 2),y - (WIDTH / 2),HIGHT,WIDTH,null);
-            } else if (dir == DirectionEnum.LEFT) {
-                g.drawImage(imgMap.get(DirectionEnum.LEFT),x- (HIGHT / 2),y - (WIDTH / 2),HIGHT,WIDTH,null);
-            }
-        } else if (this.state == STATE_MOVING) {
-            if (dir == DirectionEnum.UP) {
-                y = y - speed;
-                if (y < MainFrame.titleHight + (HIGHT / 2)) {
-                    y = MainFrame.titleHight + (HIGHT / 2);
-                }
-                g.drawImage(imgMap.get(DirectionEnum.UP),x- (WIDTH / 2),y - (HIGHT / 2),WIDTH,HIGHT,null);
-            } else if (dir == DirectionEnum.DOWN) {
-                y = y + speed;
-                if (y > TankConstants.FRAME_HIGHT - (HIGHT / 2)) {
-                    y = TankConstants.FRAME_HIGHT - (HIGHT / 2);
-                }
-                g.drawImage(imgMap.get(DirectionEnum.DOWN),x- (WIDTH / 2),y - (HIGHT / 2),WIDTH,HIGHT,null);
-            } else if (dir == DirectionEnum.RIGHT) {
-                x = x + speed;
-                if (x > TankConstants.FRAME_WIDTH - (HIGHT / 2)) {
-                    x = TankConstants.FRAME_WIDTH - (HIGHT / 2);
-                }
-                g.drawImage(imgMap.get(DirectionEnum.RIGHT),x- (HIGHT / 2),y - (WIDTH / 2),HIGHT,WIDTH,null);
-            } else if (dir == DirectionEnum.LEFT) {
-                x = x - speed;
-                if (x < HIGHT / 2) {
-                    x = HIGHT / 2;
-                }
-                g.drawImage(imgMap.get(DirectionEnum.LEFT),x- (HIGHT / 2),y - (WIDTH / 2),HIGHT,WIDTH,null);
-            }
-        }
-
-        for (Bullet bullet : bullets) {
-            if (bullet.isVisible()) {
-                bullet.fly(g,dir);
-            }
-        }
-
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet bullet = bullets.get(i);
-            if (!bullet.isVisible()) {
-                Bullet remove = bullets.remove(i);
-                BulletPool.release(remove);
-            }
-        }
-
-        /*
-        NOTE：从集合中删除元素，Java8写法，如果是java8以前，就用迭代器删除
-         */
-        bullets.removeIf(bullet -> !bullet.isVisible());
-
-    }
+    public abstract void draw(Graphics g);
 
     public void launch(Graphics g) {
         Bullet bullet = BulletPool.get();
@@ -173,6 +85,19 @@ public class Tank {
         bullet.setVisible(true);
         bullets.add(bullet);
     }
+
+    /**
+     * 创建敌人坦克
+     * @param dir 方向
+     * @return
+     */
+//    public static Tank createEnemyTank(DirectionEnum dir) {
+//        Tank tank = new Tank(dir);
+//        tank.setY(Tank.HIGHT / 2 + MainFrame.titleHight);
+//        tank.setX(Tank.WIDTH / 2 + (Utils.getRandomNumber(1,TankConstants.FRAME_WIDTH)));
+//        tank.setEnemy(true);
+//        return tank;
+//    }
 
     public int getState() {
         return state;
@@ -228,5 +153,13 @@ public class Tank {
 
     public void setDir(DirectionEnum dir) {
         this.dir = dir;
+    }
+
+    public boolean isEnemy() {
+        return enemy;
+    }
+
+    public void setEnemy(boolean enemy) {
+        this.enemy = enemy;
     }
 }

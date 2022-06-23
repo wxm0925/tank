@@ -1,9 +1,12 @@
 package wxm.tank.frame;
 
+import wxm.tank.EnemyTank;
+import wxm.tank.PlayerTank;
 import wxm.tank.constant.DirectionEnum;
 import wxm.tank.constant.MainMenu;
 import wxm.tank.Tank;
 import wxm.tank.constant.TankConstants;
+import wxm.tank.util.Utils;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -11,6 +14,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author wenxiangmin
@@ -24,7 +29,9 @@ public class MainFrame extends  Frame implements Runnable{
 
     private MainMenu mainMenu;
 
-    private Tank p1Tank = new Tank(500,200, DirectionEnum.UP);
+    private Tank p1Tank = new PlayerTank(Tank.WIDTH / 2,TankConstants.FRAME_HIGHT - Tank.HIGHT / 2, DirectionEnum.UP);
+
+    private List<Tank> anemyList = new ArrayList<>();
 
     //用于解决屏幕闪烁的问题
     private BufferedImage bufferedImage =
@@ -33,6 +40,7 @@ public class MainFrame extends  Frame implements Runnable{
                     BufferedImage.TYPE_4BYTE_ABGR);
 
     public static int titleHight;
+
     public MainFrame(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
         //初始化的游戏状态为选择菜单界面
@@ -90,8 +98,7 @@ public class MainFrame extends  Frame implements Runnable{
                         }
                     }
                     //游戏中的按键处理
-                }
-                else if (state == TankConstants.STATE_IN_GAME) {
+                } else if (state == TankConstants.STATE_IN_GAME) {
                     if (keyCode == KeyEvent.VK_UP) {
                         p1Tank.setDir(DirectionEnum.UP);
                         p1Tank.setState(Tank.STATE_MOVING);
@@ -130,6 +137,12 @@ public class MainFrame extends  Frame implements Runnable{
      */
     private void newGame() {
         state = TankConstants.STATE_IN_GAME;
+        for (int i = 0; i < 10; i++) {
+            Tank enemy = new EnemyTank(Tank.WIDTH / 2 + (Utils.getRandomNumber(1,TankConstants.FRAME_WIDTH)),
+                    Tank.HIGHT / 2 + MainFrame.titleHight,
+                    DirectionEnum.DOWN);
+            anemyList.add(enemy);
+        }
         System.out.println("开始新游戏");
     }
 
@@ -158,6 +171,9 @@ public class MainFrame extends  Frame implements Runnable{
         g.setColor(Color.BLACK);
         g.fillRect(0,0,TankConstants.FRAME_WIDTH,TankConstants.FRAME_HIGHT);
         p1Tank.draw(g);
+        for (Tank tank : anemyList) {
+            tank.draw(g);
+        }
     }
 
     /**
